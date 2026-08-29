@@ -9,6 +9,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name: Create Gradle settings
+        run: |
+          echo "include ':app'" > settings.gradle
+          echo "rootProject.name='Wajbati'" >> settings.gradle
       - name: Build APK
         run: gradle assembleDebug
       - name: Upload APK
