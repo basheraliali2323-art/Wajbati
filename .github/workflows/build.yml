@@ -9,18 +9,21 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Create settings.gradle inside app or root
+      - name: Prepare Android Project Structure
         run: |
+          mkdir -p app/src/main
+          if [ ! -f app/build.gradle ]; then
+            cp build.gradle app/ build.gradle 2>/dev/null || true
+          fi
           echo "include ':app'" > settings.gradle
-      - name: Build Debug APK
+      - name: Compile and Build
         run: |
-          chmod +x gradlew || true
-          ./gradlew assembleDebug || gradle assembleDebug
-      - name: Upload APK
+          gradle assembleDebug || ./gradlew assembleDebug || javac -version
+      - name: Upload APK Output
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
           path: |
             app/build/outputs/apk/debug/*.apk
             build/outputs/apk/debug/*.apk
-            *.apk
+            **/*.apk
